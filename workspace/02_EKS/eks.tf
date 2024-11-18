@@ -3,7 +3,7 @@ module "eks_al2023" {
   version = "~> 20.0"
 
   cluster_name    = "ex-${terraform.workspace}"
-  cluster_version = "1.29"
+  cluster_version = local.cluster_version
 
   # EKS Addons
   # cluster_addons = {

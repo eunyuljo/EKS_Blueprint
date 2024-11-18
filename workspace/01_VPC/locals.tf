@@ -39,7 +39,7 @@ locals {
     "workspace3" = {
       vpc = {
         vpc_hand_made = "10.0.0.0/16"
-        vpc_id = "vpc-00e7e31d7427ae524"
+        vpc_id = "vpc-0c859c2a6cece770b"
       }
       subnet = {
         subnet_hand_made = ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c"]

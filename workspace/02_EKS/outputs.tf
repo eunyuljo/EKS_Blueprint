@@ -23,5 +23,6 @@ output "oidc_provider_arn" {
 }
 
 output "eks_cluster_certificate_authority_data" {
-  value = module.al2023.cluster_certificate_authority_data
+  value = module.eks_al2023.cluster_certificate_authority_data
 }
+

@@ -20,7 +20,7 @@ module "eks_blueprints_addons" {
     coredns = {
       most_recent = true
       timeouts = {
-        create = "25m"
+        create = "10m"
         delete = "10m"
       }
     }
