@@ -4,21 +4,9 @@ provider "aws" {
 
 data "aws_availability_zones" "available" {}
 
-# data "terraform_remote_state" "Backend" {
-#   backend = "local"
-#   config = {
-#     path = "../00_Backend/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
-# data "terraform_remote_state" "vpc" {
-#   backend = "local"
-#   config = {
-#     path = "../01_VPC/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
 locals {
+
+####### V1 ########
   # workspace_state_mapping = {
   #   "workspace1" = "env:/workspace1/backend/terraform.tfstate"
   #   "workspace2" = "env:/workspace2/backend/terraform.tfstate"
@@ -32,6 +20,10 @@ locals {
   #   "default"    = "env:/default/terraform.tfstate"
   #   }
   # current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
+
+####### V2 ########
+
+  # 현재 워크스페이스를 기준으로, 동일한 workspace의 이름의 backend를 참고할 수 있도록 생성해주었다.
 
   workspace_state_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/backend/terraform.tfstate"
@@ -48,7 +40,26 @@ locals {
 
 }
 
-data "terraform_remote_state" "Backend" {
+
+####### V1 ########
+
+# data "terraform_remote_state" "Backend" {
+#   backend = "local"
+#   config = {
+#     path = "../00_Backend/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
+#   }
+# }
+
+# data "terraform_remote_state" "vpc" {
+#   backend = "local"
+#   config = {
+#     path = "../01_VPC/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
+#   }
+# }
+
+####### V2 ########
+
+data "terraform_remote_state" "backend" {
   backend = "s3"
   config = {
     bucket = "terraform-backend20241118070404687300000001"  # S3 버킷 이름
@@ -66,29 +77,17 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-
-
-
-
-
-
-
-
 # 02_EKS의 workspace 에 따라 아래 내용은 바뀜
 locals {
-
-  cluster_version      = data.terraform_remote_state.Backend.outputs.cluster_version
-  vpc_id               = data.terraform_remote_state.vpc.outputs.vpc_id
-  vpc_cidr             = data.terraform_remote_state.vpc.outputs.vpc_cidr
-  azs                  = data.terraform_remote_state.vpc.outputs.azs
-  public_subnets_cidrs = data.terraform_remote_state.vpc.outputs.public_subnets_cidrs
+  region                = data.terraform_remote_state.backend.outputs.defaults.region
+  cluster_version       = data.terraform_remote_state.backend.outputs.cluster_version
+  vpc_id                = data.terraform_remote_state.vpc.outputs.vpc_id
   private_subnets_cidrs = data.terraform_remote_state.vpc.outputs.private_subnets_cidrs
 }
 
 
 locals {
   name   = "ex-${terraform.workspace}"
-  region = "ap-northeast-2"
 
   tags = {
     Example    = local.name

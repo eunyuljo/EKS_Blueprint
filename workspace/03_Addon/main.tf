@@ -7,7 +7,7 @@
 module "eks_blueprints_addons" {
   source = "../../"
 
-  cluster_name      = local.name
+  cluster_name      = local.cluster_name
   cluster_endpoint  = local.cluster_endpoint
   cluster_version   = local.cluster_version
   oidc_provider_arn = local.oidc_provider

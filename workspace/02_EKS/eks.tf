@@ -2,7 +2,7 @@ module "eks_al2023" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = "ex-${terraform.workspace}"
+  cluster_name    = "${terraform.workspace}"
   cluster_version = local.cluster_version
 
   # EKS Addons
@@ -64,7 +64,36 @@ module "eks_al2023" {
       # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 3
     }
+ 
   }
 
   tags = local.tags
+}
+
+module "eks_aws_auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  version = "~> 20.0"
+
+  manage_aws_auth_configmap = true
+
+  aws_auth_roles = [
+    {
+      rolearn  = "arn:aws:iam::977099011692:role/Admin"
+      username = "Admin"
+      groups   = ["system:masters"]
+    },
+  ]
+
+  aws_auth_users = [
+    {
+      userarn  = "arn:aws:iam::977099011692:user/eks_user"
+      username = "eks_user"
+      groups   = ["system:masters"]
+    },
+  ]
+
+  aws_auth_accounts = [
+    "777777777777",
+    "888888888888",
+  ]
 }

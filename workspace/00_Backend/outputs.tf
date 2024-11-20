@@ -1,5 +1,5 @@
-output "default" {
-  value = local.default
+output "defaults" {
+  value = local.defaults
 }
 
 output "eks_info" {

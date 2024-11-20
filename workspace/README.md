@@ -1,3 +1,3 @@
-# Amazon EKS Blueprints Addons
+# S3 Backend
 
-- [Complete](https://github.com/aws-ia/terraform-aws-eks-blueprints-teams/tree/main/tests/complete)
+- 기본 리소스 생성
