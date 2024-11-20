@@ -70,6 +70,10 @@ module "eks_al2023" {
   tags = local.tags
 }
 
+
+# 사용자 추가 시 필요한 모듈 - aws-auth 
+# https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/auth-configmap.html
+
 module "eks_aws_auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
   version = "~> 20.0"

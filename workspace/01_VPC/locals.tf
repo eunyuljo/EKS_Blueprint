@@ -8,7 +8,8 @@ locals {
   name   = "ex-${terraform.workspace}"
   region = "ap-northeast-2"
 
-  # workspace별로 네트워크 정보 정의
+  # workspace별로 네트워크 정보 정의, 되도록 현재 운영중인 EKS Cluster 가 어디 네트워크에 배치되어있는지 한눈에 보이도록 구성
+  # 각 network_info 내 변수는 구성할 workspace 이름을 따른다. 
   network_info = tomap({
     "workspace1" = {
       vpc = {
@@ -51,7 +52,9 @@ locals {
     }
   })
 
-  # 환경별로 선택된 네트워크 정보를 로컬 변수에 할당
+  # 각 저장된 항목은 현재 워크스페이스 정보를 기반으로 환경별 필요한 네트워크 정보만을 로컬 변수에 할당
+  # 각 항목에 모두 접근하여 사용하게 되면 간섭될 여지가 큰 점을 고려하여 반영
+
   vpc_cidr             = local.network_info[terraform.workspace].vpc.vpc_hand_made
   vpc_id               = local.network_info[terraform.workspace].vpc.vpc_id
   azs                  = local.network_info[terraform.workspace].subnet.subnet_hand_made

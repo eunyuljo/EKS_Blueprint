@@ -1,24 +1,3 @@
-# data "terraform_remote_state" "Backend" {
-#   backend = "local"
-#   config = {
-#     path = "../00_Backend/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
-# data "terraform_remote_state" "vpc" {
-#   backend = "local"
-#   config = {
-#     path = "../01_VPC/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
-# data "terraform_remote_state" "eks" {
-#   backend = "local"
-#   config = {
-#     path = "../02_EKS/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
 locals {
 
 ####### V2 ########
@@ -27,26 +6,21 @@ locals {
 
   workspace_state_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/backend/terraform.tfstate"
-    #"default"    = "env:/default/terraform.tfstate"
     }
   current_state_key = lookup(local.workspace_state_mapping, terraform.workspace, "default/terraform.tfstate")
 
   workspace_state_vpc_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/vpc/terraform.tfstate"
-    #"default"    = "env:/default/terraform.tfstate"
     }
   current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
 
   workspace_state_eks_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/eks/terraform.tfstate"
-    #"default"    = "env:/default/terraform.tfstate"
     }
   current_state_eks_key = lookup(local.workspace_state_eks_mapping, terraform.workspace, "default/terraform.tfstate")
 
-
  #_locals_end
 }
-
 
 data "terraform_remote_state" "backend" {
   backend = "s3"
@@ -87,7 +61,7 @@ locals {
   private_subnet_ids                 = data.terraform_remote_state.vpc.outputs.private_subnets_cidrs
   cluster_name                       = data.terraform_remote_state.eks.outputs.cluster_name
   cluster_version                    = data.terraform_remote_state.eks.outputs.cluster_version
-  #cluster_id                        = data.terraform_remote_state.eks.outputs.cluster_id
+  cluster_id                         = data.terraform_remote_state.eks.outputs.cluster_id
   cluster_endpoint                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
   oidc_provider                      = data.terraform_remote_state.eks.outputs.oidc_provider
   oidc_provider_arn                  = data.terraform_remote_state.eks.outputs.oidc_provider_arn
