@@ -2,8 +2,6 @@
 https://github.com/aws-ia/terraform-aws-eks-blueprints-addon
 위 모듈을 바탕으로 운영 간소화
 
-Terraform module to deploy Kubernetes addons on Amazon EKS clusters.
-
 ## Usage
 
 ```hcl
