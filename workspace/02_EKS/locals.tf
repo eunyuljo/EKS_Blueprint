@@ -36,8 +36,6 @@ locals {
     "default"    = "env:/default/terraform.tfstate"
     }
   current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
-
-
 }
 
 
@@ -77,7 +75,7 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-# 02_EKS의 workspace 에 따라 아래 내용은 바뀜
+# 02_EKS의 workspace 에 따라 아래 내용은 바뀜 ( EKS 구성하기 위한 입력값 ) 
 locals {
   region                = data.terraform_remote_state.backend.outputs.defaults.region
   cluster_version       = data.terraform_remote_state.backend.outputs.cluster_version

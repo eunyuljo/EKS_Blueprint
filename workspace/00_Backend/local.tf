@@ -10,15 +10,15 @@ locals {
 
   eks_info = tomap({
     "workspace1" = {
-      cluster_version = "1.29"
-      nodegroup = {}
-    }
-    "workspace2" = {
       cluster_version = "1.30"
       nodegroup = {}
     }
-    "workspace3" = {
+    "workspace2" = {
       cluster_version = "1.31"
+      nodegroup = {}
+    }
+    "workspace3" = {
+      cluster_version = "1.32"
       nodegroup = {}
     }
   })

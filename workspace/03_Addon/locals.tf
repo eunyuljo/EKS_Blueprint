@@ -50,7 +50,6 @@ data "terraform_remote_state" "eks" {
 }
 
 locals {
-
   name                               = data.terraform_remote_state.backend.outputs.defaults.name
   region                             = data.terraform_remote_state.backend.outputs.defaults.region
   global_tag                         = data.terraform_remote_state.backend.outputs.global_tag

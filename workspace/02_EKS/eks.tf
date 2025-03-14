@@ -6,12 +6,12 @@ module "eks_al2023" {
   cluster_version = local.cluster_version
 
   # EKS Addons
-  # cluster_addons = {
-  #   coredns                = {}
-  #   eks-pod-identity-agent = {}
-  #   kube-proxy             = {}
-  #   vpc-cni                = {}
-  # }
+  cluster_addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+  }
 
   # 생성한 워크스페이스 기준으로 기입된 네트워크 참고
   vpc_id     = local.vpc_id
@@ -56,7 +56,7 @@ module "eks_al2023" {
     "${terraform.workspace}-nodegroup" = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       instance_types = ["m6i.large"]
-      capacity_type  = "SPOT"
+      capacity_type  = "ON_DEMAND"
 
       min_size = 3
       max_size = 5
@@ -100,4 +100,5 @@ module "eks_aws_auth" {
     "777777777777",
     "888888888888",
   ]
+  depends_on = [module.eks_al2023]
 }
