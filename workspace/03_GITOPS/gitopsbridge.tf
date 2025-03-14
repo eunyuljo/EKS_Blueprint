@@ -1,6 +1,6 @@
 locals {
-  vpc_cidr = local.vpc_id
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  # vpc_cidr = local.vpc_id
+  # azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   gitops_addons_url      = "${var.gitops_addons_org}/${var.gitops_addons_repo}"
   gitops_addons_basepath = var.gitops_addons_basepath
@@ -59,14 +59,14 @@ locals {
   addons = merge(
     local.aws_addons,
     local.oss_addons,
-    { kubernetes_version = module.eks_al2023.cluster_version },
-    { aws_cluster_name = module.eks_al2023.cluster_name }
+    { kubernetes_version = local.cluster_version },
+    { aws_cluster_name = local.cluster_name }
   )
 
   addons_metadata = merge(
     module.eks_blueprints_addons.gitops_metadata,
     {
-      aws_cluster_name = module.eks_al2023.cluster_name
+      aws_cluster_name = local.cluster_name
       aws_region       = local.region
       aws_account_id   = data.aws_caller_identity.current.account_id
       aws_vpc_id       = local.vpc_id
@@ -105,10 +105,10 @@ module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
-  cluster_name      = module.eks_al2023.cluster_name
-  cluster_endpoint  = module.eks_al2023.cluster_endpoint
-  cluster_version   = module.eks_al2023.cluster_version
-  oidc_provider_arn = module.eks_al2023.oidc_provider_arn
+  cluster_name      = local.cluster_name
+  cluster_endpoint  = local.cluster_endpoint
+  cluster_version   = local.cluster_version
+  oidc_provider_arn = local.oidc_provider_arn
 
   # Using GitOps Bridge
   create_kubernetes_resources = false
