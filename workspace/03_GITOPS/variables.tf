@@ -22,8 +22,10 @@ variable "addons" {
     enable_aws_load_balancer_controller = true
     enable_metrics_server               = true
     enable_cert_manager                 = true
+    enable_ingress_nginx                = true
   }
 }
+
 # Addons Git
 variable "gitops_addons_org" {
   description = "Git repository org/user contains for addons"
