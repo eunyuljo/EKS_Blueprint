@@ -1,29 +1,13 @@
-# variable "vpc_cidr" {
-#   description = "VPC CIDR"
-#   type        = string
-#   default     = "10.0.0.0/16"
-# }
-# variable "region" {
-#   description = "AWS region"
-#   type        = string
-#   default     = "ap-northeast-2"
-# }
-# variable "kubernetes_version" {
-#   description = "Kubernetes version"
-#   type        = string
-#   default     = "1.30"
-# }
-
+variable "cluster_tags" {
+  description = "Addtitional tags"
+  type = map(string)
+  default = {}
+}
 
 variable "addons" {
   description = "Kubernetes addons"
   type        = any
-  default = {
-    enable_aws_load_balancer_controller = true
-    enable_metrics_server               = true
-    enable_cert_manager                 = true
-    enable_ingress_nginx                = true
-  }
+  default = {}
 }
 
 # Addons Git
@@ -79,3 +63,21 @@ variable "gitops_workload_path" {
   type        = string
   default     = "/"
 }
+
+
+
+# variable "vpc_cidr" {
+#   description = "VPC CIDR"
+#   type        = string
+#   default     = "10.0.0.0/16"
+# }
+# variable "region" {
+#   description = "AWS region"
+#   type        = string
+#   default     = "ap-northeast-2"
+# }
+# variable "kubernetes_version" {
+#   description = "Kubernetes version"
+#   type        = string
+#   default     = "1.30"
+# }

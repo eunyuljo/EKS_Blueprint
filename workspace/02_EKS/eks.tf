@@ -1,3 +1,4 @@
+
 module "eks_al2023" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
@@ -64,11 +65,28 @@ module "eks_al2023" {
       # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 3
     }
- 
   }
-
+  cluster_tags = local.karpenter_tag
   tags = local.tags
 }
+
+
+
+
+locals {
+  # Karpenter addon이 활성화된 경우에만 노드 역할 추가
+  karpenter_node_role = local.aws_addons.enable_karpenter ? [
+    {
+      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups   = [
+        "system:bootstrappers", 
+        "system:nodes"
+      ]
+    }
+  ] : []
+}
+
 
 
 # 사용자 추가 시 필요한 모듈 - aws-auth 
@@ -80,13 +98,19 @@ module "eks_aws_auth" {
 
   manage_aws_auth_configmap = true
 
-  aws_auth_roles = [
-    {
-      rolearn  = "arn:aws:iam::977099011692:role/Admin"
-      username = "Admin"
-      groups   = ["system:masters"]
-    },
-  ]
+  aws_auth_roles = concat( # 삼항 연산자
+    [
+      {
+        rolearn  = "arn:aws:iam::977099011692:role/Admin"
+        username = "Admin"
+        groups   = ["system:masters"]
+      },
+    ], 
+
+    
+    # Karpenter addon이 활성화된 경우에만 노드 역할 추가
+    local.karpenter_node_role 
+  )
 
   aws_auth_users = [
     {
@@ -96,9 +120,14 @@ module "eks_aws_auth" {
     },
   ]
 
+
   aws_auth_accounts = [
     "777777777777",
     "888888888888",
   ]
   depends_on = [module.eks_al2023]
 }
+
+
+
+

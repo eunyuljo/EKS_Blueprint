@@ -4,16 +4,19 @@ locals {
 
   # 현재 워크스페이스를 기준으로, 동일한 workspace의 이름의 backend를 참고할 수 있도록 생성해주었다.
 
+  # Backend
   workspace_state_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/backend/terraform.tfstate"
     }
   current_state_key = lookup(local.workspace_state_mapping, terraform.workspace, "default/terraform.tfstate")
 
+  # VPC
   workspace_state_vpc_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/vpc/terraform.tfstate"
     }
   current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
 
+  # EKS
   workspace_state_eks_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/eks/terraform.tfstate"
     }
@@ -21,6 +24,7 @@ locals {
 
  #_locals_end
 }
+
 
 data "terraform_remote_state" "backend" {
   backend = "s3"
@@ -47,6 +51,10 @@ data "terraform_remote_state" "eks" {
     key    = local.current_state_eks_key                       # 현재 워크스페이스에 해당하는 상태 파일 경로
     region = "ap-northeast-2"
   }
+}
+
+locals {
+  environment = terraform.workspace
 }
 
 locals {

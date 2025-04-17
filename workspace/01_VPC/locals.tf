@@ -33,7 +33,7 @@ locals {
         subnet_hand_made = ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c"]
         subnet_make = {
           public_lb_subnet_hand_made  = ["subnet-0b8b02f5f559e65b6", "subnet-0e3639679afd9af3b", "subnet-06f3e33b54b7e9761"]
-          private_subnet_hand_made    = ["subnet-044d9418d551a5386", "subnet-0bfe59237e8fdedd2", "subnet-0d6b3838ce2d68b53"]
+          private_subnet_hand_made    = ["subnet-09e4cacede78c904f", "subnet-0860d36c11539e02f", "subnet-0f8ccdc3624d4ab68"]
         }
       }
     }

@@ -4,56 +4,30 @@ provider "aws" {
 
 data "aws_availability_zones" "available" {}
 
+data "aws_route53_zone" "sub" {
+  name = "${local.hosted_zone_name}"
+}
+
+locals { hosted_zone_name = "example-mzc.com" }
+
 locals {
-
-####### V1 ########
-  # workspace_state_mapping = {
-  #   "workspace1" = "env:/workspace1/backend/terraform.tfstate"
-  #   "workspace2" = "env:/workspace2/backend/terraform.tfstate"
-  #   "default"    = "env:/default/terraform.tfstate"
-  #   }
-  # current_state_key = lookup(local.workspace_state_mapping, terraform.workspace, "default/terraform.tfstate")
-
-  # workspace_state_vpc_mapping = {
-  #   "workspace1" = "env:/workspace1/vpc/terraform.tfstate"
-  #   "workspace2" = "env:/workspace2/vpc/terraform.tfstate"
-  #   "default"    = "env:/default/terraform.tfstate"
-  #   }
-  # current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
-
 ####### V2 ########
-
   # 현재 워크스페이스를 기준으로, 동일한 workspace의 이름의 backend를 참고할 수 있도록 생성해주었다.
 
+  # backend
   workspace_state_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/backend/terraform.tfstate"
     "default"    = "env:/default/terraform.tfstate"
     }
   current_state_key = lookup(local.workspace_state_mapping, terraform.workspace, "default/terraform.tfstate")
 
+  # vpc
   workspace_state_vpc_mapping = {
     "${terraform.workspace}" = "env:/${terraform.workspace}/vpc/terraform.tfstate"
     "default"    = "env:/default/terraform.tfstate"
     }
   current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
 }
-
-
-####### V1 ########
-
-# data "terraform_remote_state" "Backend" {
-#   backend = "local"
-#   config = {
-#     path = "../00_Backend/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
-
-# data "terraform_remote_state" "vpc" {
-#   backend = "local"
-#   config = {
-#     path = "../01_VPC/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
-#   }
-# }
 
 ####### V2 ########
 
@@ -85,11 +59,55 @@ locals {
 
 
 locals {
-  name   = "ex-${terraform.workspace}"
+  environment = terraform.workspace
+}
 
+
+
+locals {
+  name   = "ex-${terraform.workspace}"
+  # karpenter 용 tag 추가 변수
+  karpenter_tag = { 
+    "karpenter.sh/discovery"    = "${terraform.workspace}"
+      }
   tags = {
     Example    = local.name
     GithubRepo = "terraform-aws-eks"
     GithubOrg  = "terraform-aws-modules"
   }
 }
+
+
+
+
+####### V1 ########
+  # workspace_state_mapping = {
+  #   "workspace1" = "env:/workspace1/backend/terraform.tfstate"
+  #   "workspace2" = "env:/workspace2/backend/terraform.tfstate"
+  #   "default"    = "env:/default/terraform.tfstate"
+  #   }
+  # current_state_key = lookup(local.workspace_state_mapping, terraform.workspace, "default/terraform.tfstate")
+
+  # workspace_state_vpc_mapping = {
+  #   "workspace1" = "env:/workspace1/vpc/terraform.tfstate"
+  #   "workspace2" = "env:/workspace2/vpc/terraform.tfstate"
+  #   "default"    = "env:/default/terraform.tfstate"
+  #   }
+  # current_state_vpc_key = lookup(local.workspace_state_vpc_mapping, terraform.workspace, "default/terraform.tfstate")
+
+
+####### V1 ########
+
+# data "terraform_remote_state" "Backend" {
+#   backend = "local"
+#   config = {
+#     path = "../00_Backend/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
+#   }
+# }
+
+# data "terraform_remote_state" "vpc" {
+#   backend = "local"
+#   config = {
+#     path = "../01_VPC/terraform.tfstate.d/${terraform.workspace}/terraform.tfstate"
+#   }
+# }
