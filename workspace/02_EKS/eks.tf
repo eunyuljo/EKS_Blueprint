@@ -31,7 +31,7 @@ module "eks_al2023" {
       source_node_security_group = true
     }
     ingress_https = {
-      description                = "kubectl"
+      description                = "ingress"
       protocol                   = "tcp"
       from_port                  = 443
       to_port                    = 443
@@ -40,7 +40,7 @@ module "eks_al2023" {
     }
   }
 
-    # Extend node-to-node security group rules
+# Extend node-to-node security group rules
   node_security_group_additional_rules = {
     ingress_self_all = {
       description = "Node to node all ports/protocols"
@@ -49,6 +49,16 @@ module "eks_al2023" {
       to_port     = 0
       type        = "ingress"
       self        = true
+    }
+
+## Targetgroupbidings
+  ingress_allow_health_check = {
+    description      = "Allow health check from Target Group"
+    protocol         = "tcp"
+    from_port        = 8080
+    to_port          = 8080
+    type             = "ingress"
+    cidr_blocks      = ["10.0.0.0/16"]  # VPC CIDR 범위
     }
   }
 
@@ -69,8 +79,6 @@ module "eks_al2023" {
   cluster_tags = local.karpenter_tag
   tags = local.tags
 }
-
-
 
 
 locals {

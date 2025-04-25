@@ -37,7 +37,10 @@ variable "gitops_addons_path" {
   default     = "bootstrap/control-plane/addons"
 }
 
-# Workloads Git
+
+
+
+# eyjo Workloads Git
 variable "gitops_workload_org" {
   description = "Git repository org/user contains for workload"
   type        = string
@@ -46,7 +49,7 @@ variable "gitops_workload_org" {
 variable "gitops_workload_repo" {
   description = "Git repository contains for workload"
   type        = string
-  default     = "eks-blueprints-workload"
+  default     = "eks-blueprints-workloads"
 }
 variable "gitops_workload_revision" {
   description = "Git repository revision/branch/ref for workload"
@@ -56,12 +59,12 @@ variable "gitops_workload_revision" {
 variable "gitops_workload_basepath" {
   description = "Git repository base path for workload"
   type        = string
-  default     = "k8s/"
+  default     = "k8s"
 }
 variable "gitops_workload_path" {
   description = "Git repository path for workload"
   type        = string
-  default     = "/"
+  default     = "envs/eyjo"
 }
 
 

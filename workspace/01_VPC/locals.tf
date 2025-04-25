@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "ex-${terraform.workspace}"
+  name   = "${terraform.workspace}"
   region = "ap-northeast-2"
 
   # workspace별로 네트워크 정보 정의, 되도록 현재 운영중인 EKS Cluster 가 어디 네트워크에 배치되어있는지 한눈에 보이도록 구성
@@ -60,6 +60,7 @@ locals {
   azs                  = local.network_info[terraform.workspace].subnet.subnet_hand_made
   public_subnets_cidrs = local.network_info[terraform.workspace].subnet.subnet_make.public_lb_subnet_hand_made
   private_subnets_cidrs = local.network_info[terraform.workspace].subnet.subnet_make.private_subnet_hand_made
+
 
   tags = {
     Example    = local.name

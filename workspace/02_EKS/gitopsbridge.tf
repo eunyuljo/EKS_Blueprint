@@ -11,10 +11,7 @@ locals {
   gitops_workload_path     = var.gitops_workload_path
   gitops_workload_revision = var.gitops_workload_revision
 
-
-
-  eks_cluster_domain = "${local.environment}.${local.hosted_zone_name}" # for external-dns
-
+  eks_cluster_domain = "${local.hosted_zone_name}" # for external-dns
 
   aws_addons = {
     enable_cert_manager                          = true
@@ -91,17 +88,17 @@ locals {
     },
     {
       external_dns_policy        = "sync"
+      route53_weight             = local.route53_weight
+      argocd_route53_weight      = local.argocd_route53_weight
+      ingress_type               = local.ingress_type
+      eks_cluster_domain         = local.eks_cluster_domain
     }
   )
 
   argocd_apps  = {
     addons = file("${path.module}/bootstrap/addons.yaml") 
-    }
-
-
- 
-
-
+    workload = file("${path.module}/bootstrap/workloads.yaml") 
+  }
 }
 
 ################################################################################
@@ -116,6 +113,7 @@ module "gitops_bridge_bootstrap" {
     metadata      = local.addons_metadata
     addons        = local.addons
   }
+
   apps = local.argocd_apps
 }
 

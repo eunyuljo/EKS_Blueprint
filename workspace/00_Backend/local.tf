@@ -3,7 +3,7 @@
 locals {
   defaults = {
     region = "ap-northeast-2"
-    name = "ex-${terraform.workspace}"
+    name = "${terraform.workspace}"
   }
 
   global_tag = {}
